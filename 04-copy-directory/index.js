@@ -4,27 +4,33 @@ const path = require("path");
 const folderPath = path.join(__dirname, "files");
 const newFolderPath = path.join(__dirname, "files-copy");
 
-function copyDir() {
-  fs.rm(newFolderPath, { recursive: true }, (err) => {
-    if (err && err.code !== "ENOENT") throw err;
+fs.rm(newFolderPath, { recursive: true }, (err) => {
+  if (err && err.code !== "ENOENT") throw err;
 
-    fs.mkdir(newFolderPath, (err) => {
+  function copyDir(sourceFolder, targetFolder) {
+    fs.mkdir(targetFolder, (err) => {
       if (err) throw err;
 
-      fs.readdir(folderPath, { withFileTypes: true }, (err, files) => {
+      fs.readdir(sourceFolder, { withFileTypes: true }, (err, elements) => {
         if (err) throw err;
 
-        files.forEach((file) => {
-          const filePath = path.join(folderPath, file.name);
-          const newFilePath = path.join(newFolderPath, file.name);
+        elements.forEach((element) => {
+          if (element.isFile()) {
+            const filePath = path.join(sourceFolder, element.name);
+            const newFilePath = path.join(targetFolder, element.name);
 
-          fs.copyFile(filePath, newFilePath, (err) => {
-            if (err) throw err;
-          });
+            fs.copyFile(filePath, newFilePath, (err) => {
+              if (err) throw err;
+            });
+          } else {
+            const subFolderPath = path.join(sourceFolder, element.name);
+            const newSubFolderPath = path.join(targetFolder, element.name);
+
+            copyDir(subFolderPath, newSubFolderPath);
+          }
         });
       });
     });
-  });
-}
-
-copyDir();
+  }
+  copyDir(folderPath, newFolderPath);
+});

@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { Stream } = require("stream");
 
 const stylesFolderPath = path.join(__dirname, "styles");
 const bundleStylesPath = path.join(__dirname, "project-dist", "bundle.css");
@@ -14,9 +13,7 @@ fs.readdir(stylesFolderPath, { withFileTypes: true }, (err, files) => {
     const file = files[i];
     if (path.extname(file.name) === ".css") {
       const stream = new fs.ReadStream(path.join(stylesFolderPath, file.name));
-      stream.on("readable", (err) => {
-        if (err) throw err;
-
+      stream.on("readable", () => {
         const data = stream.read();
         if (data) {
           bundleStyles.write(data);
@@ -31,5 +28,5 @@ fs.readdir(stylesFolderPath, { withFileTypes: true }, (err, files) => {
       });
     }
   };
-  writeData(); 
+  writeData();
 });

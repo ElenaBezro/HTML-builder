@@ -18,7 +18,12 @@ fs.readdir(folderPath, { withFileTypes: true }, (err, files) => {
           return;
         }
         console.log(
-          element.name.slice(0, element.name.lastIndexOf(".")) + " - " + path.extname(element.name).slice(1) + " - " + stats.size / 1024 + "kb"
+          element.name.slice(0, element.name.lastIndexOf(".")) +
+            " - " +
+            path.extname(element.name).slice(1) +
+            " - " +
+            stats.size +
+            "b"
         );
       });
     }

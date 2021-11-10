@@ -11,6 +11,14 @@ fs.readdir(stylesFolderPath, { withFileTypes: true }, (err, files) => {
   let i = 0;
   const writeData = () => {
     const file = files[i];
+
+    const writeNextFile = () => {
+      i++;
+      if (i < files.length) {
+        writeData();
+      }
+    };
+
     if (path.extname(file.name) === ".css") {
       const stream = new fs.ReadStream(path.join(stylesFolderPath, file.name));
       stream.on("readable", () => {
@@ -18,14 +26,13 @@ fs.readdir(stylesFolderPath, { withFileTypes: true }, (err, files) => {
         if (data) {
           bundleStyles.write(data);
         }
-        i++;
-        if (i < files.length) {
-          writeData();
-        }
+        writeNextFile();
       });
       stream.on("error", (err) => {
         throw err;
       });
+    } else {
+      writeNextFile();
     }
   };
   writeData();

@@ -17,8 +17,9 @@ fs.readdir(folderPath, { withFileTypes: true }, (err, files) => {
           console.error(err);
           return;
         }
+        let elemName = path.basename(element.name, path.extname(element.name));
         console.log(
-          element.name.slice(0, element.name.lastIndexOf(".")) +
+          elemName +
             " - " +
             path.extname(element.name).slice(1) +
             " - " +
@@ -29,3 +30,4 @@ fs.readdir(folderPath, { withFileTypes: true }, (err, files) => {
     }
   });
 });
+//ath.basename(file.name, path.extname(file.name));
